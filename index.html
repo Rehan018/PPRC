@@ -93,6 +93,17 @@ console.log(newDiv);
 
 newDiv.style.fontSize='30px';
 console.log(newDiv,h1);
+
+// Add "Hello " before "Item Lister"
+var headerTitle = document.getElementById('main-header');
+var helloTextNode1 = document.createTextNode('Hello ');
+headerTitle.insertBefore(helloTextNode1, headerTitle.firstElementChild);
+
+// Add "Hello " before "Item 1"
+var firstItem = document.querySelector('#items').firstElementChild;
+var helloTextNode2 = document.createTextNode('Hello ');
+firstItem.insertBefore(helloTextNode2, firstItem.firstChild);
+
 </script>
 </body>
 </html>
