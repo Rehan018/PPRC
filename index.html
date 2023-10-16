@@ -31,20 +31,11 @@
   </div>
 <!-- <script src="dome.js"></script> -->
 <script>
-    // First, add a new 'li' element
-var list = document.querySelector('#items');
-var newLi = document.createElement('li');
-newLi.textContent = 'New Item';
-
-list.appendChild(newLi);
-
-// Edit using 'getElementsByClassName'
-var itemByClass = document.getElementsByClassName('list-group-item');
-console.log(itemByClass[itemByClass.length - 1]);
-
-// Edit using 'getElementsByTagName'
-var itemByTag = document.getElementsByTagName('li');
-itemByTag[itemByTag.length - 1].style.backgroundColor = 'lightblue';
+    var items=document.getElementsByClassName('list-group-item');
+console.log(items);
+console.log(items[1]);
+items[2].style.backgroundColor='green';
+items[3].style.display = 'none';
 </script>
 </body>
 </html>
