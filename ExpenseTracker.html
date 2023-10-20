@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Your HTML content will go here -->
+    <div class="container mt-5">
+        <h2>Expense Tracker</h2>
+    
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input type="number" class="form-control" id="amount" placeholder="Enter amount" name="amount">
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" class="form-control" id="description" placeholder="Enter description" name="description">
+        </div>
+        
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select class="form-control" id="category">
+                <option>fuel</option>
+                <option>food</option>
+                <option>Movie</option>
+                <option>Travel</option>
+                <option>Hostel</option>
+                <option>Cab</option>
+            </select>
+        </div>
+        
+        <button id="addExpense" class="btn btn-primary">Add Expense</button>
+        
+        <ul id="expenseList" class="list-group mt-5">
+            <!-- Expenses will be appended here -->
+        </ul>
+    </div>
+    <script>
+        // Function to add an expense item to the list
+        function addExpenseItem(amount, description, category) {
+            const expenseItem = `${amount}-${description}-${category}`;
+            const listItem = document.createElement("li");
+            listItem.textContent = expenseItem;
+            listItem.classList.add("list-group-item");
+            
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete Expense";
+            deleteBtn.classList.add("btn", "btn-danger", "btn-sm", "float-right");
+            deleteBtn.onclick = function() {
+                const index = expenses.findIndex(exp => exp.description === description && exp.amount === amount && exp.category === category);
+                if (index !== -1) {
+                    expenses.splice(index, 1);
+                    localStorage.setItem("expenses", JSON.stringify(expenses));
+                }
+                listItem.remove();
+            };
+            listItem.appendChild(deleteBtn);
+            
+            document.getElementById("expenseList").appendChild(listItem);
+        }
+    
+        // Fetch and display stored expenses on page load
+        const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+        for(const expense of expenses) {
+            addExpenseItem(expense.amount, expense.description, expense.category);
+        }
+    
+        document.getElementById("addExpense").addEventListener("click", function() {
+            const amount = document.getElementById("amount").value;
+            const description = document.getElementById("description").value;
+            const category = document.getElementById("category").value;
+    
+            const data = {
+                amount: amount,
+                description: description,
+                category: category
+            };
+    
+            if (amount && description) {
+                addExpenseItem(amount, description, category);
+    
+                expenses.push(data);
+                localStorage.setItem("expenses", JSON.stringify(expenses));
+            }
+        });
+    
+        </script>
+</body>
+
+</html>
