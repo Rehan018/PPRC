@@ -1,143 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-  <title>Item Lister</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
-    <header id="main-header" class="bg-success text-white p-4 mb-3">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-                <h1 id="header-title">Item Lister</h1>
-            </div>
-            <div class="col-md-6 align-self-center">
-                <input type="text" class="form-control" id="filter" placeholder="Search Items...">
-            </div>
-          </div>
+    <!-- Your HTML content will go here -->
+    <div class="container mt-5">
+        <h2>Expense Tracker</h2>
+    
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input type="number" class="form-control" id="amount" placeholder="Enter amount" name="amount">
         </div>
-      </header>
-      <div class="container">
-       <div id="main" class="card card-body">
-        <h2 class="title">Add Items</h2>
-        <form id="addForm" class="form-inline mb-3">
-          <input type="text" class="form-control mr-2" id="item">
-          <input type="submit" class="btn btn-dark" value="Submit">
-        </form>
-        <h2 class="title">Items</h2>
-        <ul id="items" class="list-group">
-          <li class="list-group-item">Item 1 <button class="btn btn-danger btn-sm float-right delete">X</button></li>
-          <li class="list-group-item">Item 2 <button class="btn btn-danger btn-sm float-right delete">X</button></li>
-          <li class="list-group-item">Item 3 <button class="btn btn-danger btn-sm float-right delete">X</button></li>
-          <li class="list-group-item">Item 4 <button class="btn btn-danger btn-sm float-right delete">X</button></li>
+        
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" class="form-control" id="description" placeholder="Enter description" name="description">
+        </div>
+        
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select class="form-control" id="category">
+                <option>fuel</option>
+                <option>food</option>
+                <option>Movie</option>
+                <option>Travel</option>
+                <option>Hostel</option>
+                <option>Cab</option>
+            </select>
+        </div>
+        
+        <button id="addExpense" class="btn btn-primary">Add Expense</button>
+        
+        <ul id="expenseList" class="list-group mt-5">
+            <!-- Expenses will be appended here -->
         </ul>
-       </div>
-      </div>
-<!-- <script src="part3.js"></script> -->
-<script>
-    // Load items from local storage when the page is loaded
-document.addEventListener('DOMContentLoaded', fetchItems);
-
-var form = document.getElementById('addForm');
-var itemList = document.getElementById('items');
-var filter = document.getElementById('filter');
-
-// Form submit event
-form.addEventListener('submit', addItem);
-// Delete event
-itemList.addEventListener('click', removeItem);
-// Filter event
-filter.addEventListener('keyup', filterItems);
-
-// Add item
-function addItem(e) {
-  e.preventDefault();
-
-  var newItem = document.getElementById('item').value;
-  var li = document.createElement('li');
-  li.className = 'list-group-item';
-  li.appendChild(document.createTextNode(newItem));
-
-  var deleteBtn = document.createElement('button');
-  deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-  deleteBtn.appendChild(document.createTextNode('X'));
-  li.appendChild(deleteBtn);
-
-  itemList.appendChild(li);
-
-  // Store in local storage
-  storeItemInLocalStorage(newItem);
-}
-
-// Remove item
-function removeItem(e) {
-  if (e.target.classList.contains('delete')) {
-    if (confirm('Are You Sure?')) {
-      var li = e.target.parentElement;
-      itemList.removeChild(li);
-      // Remove from local storage
-      removeItemFromLocalStorage(li);
-    }
-  }
-}
-
-function filterItems(e) {
-    var text = e.target.value.toLowerCase();
-    var items = itemList.getElementsByTagName('li');
-    Array.from(items).forEach(function(item) {
-      var itemName = item.firstChild.textContent;
-      if (itemName.toLowerCase().indexOf(text) != -1) {
-        item.style.display = 'block';
-      } else {
-        item.style.display = 'none';
-      }
-    });
-  }
-
-  //Store Data item in local machine
-  
-function storeItemInLocalStorage(item) {
-  let items;
-  if (localStorage.getItem('items') === null) {
-    items = [];
-  } else {
-    items = JSON.parse(localStorage.getItem('items'));
-  }
-
-  items.push(item);
-  localStorage.setItem('items', JSON.stringify(items));
-}
-
-function removeItemFromLocalStorage(liItem) {
-  let items = JSON.parse(localStorage.getItem('items'));
-  items.splice(items.indexOf(liItem.textContent.slice(0, -1)), 1); // -1 to avoid the 'X' from delete button
-  localStorage.setItem('items', JSON.stringify(items));
-}
-
-function fetchItems() {
-  let items = JSON.parse(localStorage.getItem('items'));
-  
-  if (items === null) return;
-
-  items.forEach(function(item){
-    var li = document.createElement('li');
-    li.className = 'list-group-item';
-    li.appendChild(document.createTextNode(item));
-
-    var deleteBtn = document.createElement('button');
-    deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-    deleteBtn.appendChild(document.createTextNode('X'));
-    li.appendChild(deleteBtn);
-
-    itemList.appendChild(li);
-  });
-}
-
-
-
-</script>
+    </div>
+    <script>
+        // Function to add an expense item to the list
+        function addExpenseItem(amount, description, category) {
+            const expenseItem = `${amount}-${description}-${category}`;
+            const listItem = document.createElement("li");
+            listItem.textContent = expenseItem;
+            listItem.classList.add("list-group-item");
+            
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete Expense";
+            deleteBtn.classList.add("btn", "btn-danger", "btn-sm", "float-right");
+            deleteBtn.onclick = function() {
+                const index = expenses.findIndex(exp => exp.description === description && exp.amount === amount && exp.category === category);
+                if (index !== -1) {
+                    expenses.splice(index, 1);
+                    localStorage.setItem("expenses", JSON.stringify(expenses));
+                }
+                listItem.remove();
+            };
+            listItem.appendChild(deleteBtn);
+            
+            document.getElementById("expenseList").appendChild(listItem);
+        }
+    
+        // Fetch and display stored expenses on page load
+        const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+        for(const expense of expenses) {
+            addExpenseItem(expense.amount, expense.description, expense.category);
+        }
+    
+        document.getElementById("addExpense").addEventListener("click", function() {
+            const amount = document.getElementById("amount").value;
+            const description = document.getElementById("description").value;
+            const category = document.getElementById("category").value;
+    
+            const data = {
+                amount: amount,
+                description: description,
+                category: category
+            };
+    
+            if (amount && description) {
+                addExpenseItem(amount, description, category);
+    
+                expenses.push(data);
+                localStorage.setItem("expenses", JSON.stringify(expenses));
+            }
+        });
+    
+        </script>
 </body>
+
 </html>
