@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>HotelBooking</title>
+</head>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        list-style: none;
+    }
+
+    .booking-container {
+        max-width: 600px;
+        background: #fff;
+        margin: 50px auto;
+        padding: 20px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="tel"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10p;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .btn {
+        display: inline-block;
+        background: #333;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .booking-container {
+        margin: auto;
+        width: 800px;
+        overflow: auto;
+        padding: 5rem 2rem;
+    }
+
+    .btn:hover {
+        background: #555;
+    }
+</style>
+
+<body>
+
+    <div class="booking-container">
+        <h2>Hotel Booking Form</h2>
+        <form id="bookingForm" class="booking-form">
+            <div class="input-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" required>
+            </div>
+            <div class="input-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" required>
+            </div>
+            <div class="input-group">
+                <label for="roomNumber">Room Number:</label>
+                <input type="number" id="roomNumber" required>
+            </div>
+            <div class="input-group">
+                <label for="aadharNumber">Aadhar Number:</label>
+                <input type="text" id="aadharNumber" required>
+            </div>
+            <div class="input-group">
+                <label for="email">Email ID:</label>
+                <input type="text" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" id="email" required>
+            </div>
+            <div class="input-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" required>
+            </div>
+
+            <div class="input-group">
+                <label for="mobileNo">Mobile Number:</label>
+                <input type="tel" id="mobileNo" required>
+            </div>
+            <div class="input-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" required>
+            </div>
+            <button type="submit" class="btn">Submit</button>
+        </form>
+        <h3>Booking List:</h3>
+        <ul id="bookingList"></ul>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const roomNumber = document.getElementById('roomNumber').value;
+            const aadharNumber = document.getElementById('aadharNumber').value;
+            const email = document.getElementById('email').value;
+            const address = document.getElementById('address').value;
+            const mobileNo = document.getElementById('mobileNo').value;
+            const date = document.getElementById('date').value;
+
+            const bookingData = {
+                firstName: firstName,
+                lastName: lastName,
+                roomNumber: roomNumber,
+                aadharNumber: aadharNumber,
+                email: email,
+                address: address,
+                mobileNo: mobileNo,
+                date: date
+            };
+
+            // Add to local storage
+            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const isEditing = localStorage.getItem('editing');
+
+            if (isEditing !== null) {
+                bookings[isEditing] = bookingData;
+                localStorage.removeItem('editing');
+            } else {
+                bookings.push(bookingData);
+            }
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+            displayBookings();
+            document.getElementById('bookingForm').reset();
+        });
+
+        function displayBookings() {
+            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            const bookingList = document.getElementById('bookingList');
+
+            bookingList.innerHTML = '';
+
+            bookings.forEach((booking, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+            ${booking.firstName} ${booking.lastName} - 
+            Room No: ${booking.roomNumber} - 
+            Date: ${booking.date}
+        `;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'X';
+                deleteButton.onclick = function () {
+                    deleteBooking(index);
+                };
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.onclick = function () {
+                    editBooking(index);
+                }
+
+
+                li.appendChild(editButton);
+                li.appendChild(deleteButton);
+                bookingList.appendChild(li);
+            });
+        }
+
+        // After the "displayBookings" function, add the following code:
+
+function checkResource() {
+    axios.get('https://crudcrud.com/api/337d9f13f79944f7b1ac3ec5baf4c8bf/objects')
+        .then(response => {
+            // Check the response status and display a message accordingly
+            if (response.status === 200) {
+                console.log('Resource request was successful.');
+            } else {
+                console.log('Resource request failed.');
+            }
+        })
+        .catch(error => {
+            console.error('Error checking the resource:', error);
+        });
+}
+
+// Call the function to check the resource success
+checkResource();
+
+        function deleteBooking(index) {
+            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            bookings.splice(index, 1);
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+            displayBookings();
+        }
+        function editBooking(index) {
+            let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+            let booking = bookings[index];
+
+            document.getElementById('firstName').value = booking.firstName;
+            document.getElementById('lastName').value = booking.lastName;
+            document.getElementById('roomNumber').value = booking.roomNumber;
+            document.getElementById('aadharNumber').value = booking.aadharNumber;
+            document.getElementById('email').value = booking.email;
+            document.getElementById('address').value = booking.address;
+            document.getElementById('mobileNo').value = booking.mobileNo;
+            document.getElementById('date').value = booking.date;
+
+            localStorage.setItem('editing', index);
+            document.querySelector('#bookingForm button[type="submit"]').textContent = 'Update Booking';
+        }
+        displayBookings();
+
+    </script>
+</body>
+
+</html>
